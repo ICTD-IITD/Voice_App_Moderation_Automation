@@ -47,12 +47,17 @@ def train_model_SVM(train_Data, test_Data, model_name):
     scaler.fit(x_train)
     x_train = scaler.transform(x_train)
     x_test = scaler.transform(x_test)
-    #pickle.dump(scaler, open('gender_scaler','wb'))
-    svm = SVC(C=2, gamma = 0.03).fit(x_train, y_train)
-    print("Accuracy on training set:",svm.score(x_train, y_train))
-    accuracy = svm.score(x_test, y_test)
-    print("Accuracy on test set: ",(accuracy))
+    pickle.dump(scaler, open('gender_scaler','wb'))
+    # svm = SVC(C=2, gamma = 0.03).fit(x_train, y_train)
+    svm = SVC(C=1, gamma=0.01).fit(x_train, y_train)
+    train_pred = svm.predict(x_train)
+
+    # print("Accuracy on training set: ",svm.score(y_train, train_pred))
+    print("Accuracy on training set: ",accuracy_score(y_train, train_pred))
     y_pred = svm.predict(x_test)
+    # accuracy = svm.score(y_test, y_pred)
+    accuracy = accuracy_score(y_test, y_pred)
+    print("Accuracy on test set: ",(accuracy))
     
     #save model
     pickle.dump(svm, open(model_name, 'wb'))	
@@ -68,7 +73,7 @@ def k_fold_validation_train_model(input_file, model_name, k=10):
         for row in csvreader:
             rows.append(row[1:])
    
-    rows = np.array(rows)
+    rows = np.array(rows).astype(float)
     print(rows.shape)
 	
     kf = KFold(n_splits=k, shuffle = True)
@@ -80,11 +85,14 @@ def k_fold_validation_train_model(input_file, model_name, k=10):
 
     for train_index, test_index in kf.split(rows):
         print("Chunk OF Data for iteration : " + str(i))
-        print("TRAIN:", train_index, "TEST:", test_index)
+        # print("TRAIN:", train_index, "TEST:", test_index)
         train_data = rows[train_index]
         test_data = rows[test_index]
         #model_name = "genderClassifier" + str(i);
+        start_time = time.time()
         y_true, y_pred, accuracy = train_model_SVM(train_data, test_data, model_name)
+        end_time = time.time()
+        print("Time taken to train SVM gender classifier : {} seconds".format(end_time-start_time))
         accuracies.append(accuracy)
         test_true = np.append(test_true,y_true)
         test_predicted = np.append(test_predicted, y_pred)		
