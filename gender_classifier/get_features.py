@@ -45,13 +45,19 @@ def get_feats(df, auds_dir, feats_dir, fem_flag):
                     feats = list(np.load(os.path.join(feats_dir, aud_name.replace('wav', 'npy'))))
                     feats.insert(0, aud_link)
                 except:
+                    try:
+                        feats = extract_feats(aud_link, os.path.join(auds_dir, aud_name), fem_flag)
+                        np_feats = np.asarray(feats[1:])
+                        np.save(os.path.join(feats_dir, aud_name.replace('wav', 'npy')), np_feats)
+                    except Exception as e:
+                        print("Error in audio : {} and error : {}".format(aud_name, str(e)))
+            else:
+                try:
                     feats = extract_feats(aud_link, os.path.join(auds_dir, aud_name), fem_flag)
                     np_feats = np.asarray(feats[1:])
                     np.save(os.path.join(feats_dir, aud_name.replace('wav', 'npy')), np_feats)
-            else:
-                feats = extract_feats(aud_link, os.path.join(auds_dir, aud_name), fem_flag)
-                np_feats = np.asarray(feats[1:])
-                np.save(os.path.join(feats_dir, aud_name.replace('wav', 'npy')), np_feats)
+                except Exception as e:
+                    print("Error in audio : {} and error : {}".format(aud_name, str(e)))
             all_feats.append(feats)
     print("Extracted feats")
     return all_feats
