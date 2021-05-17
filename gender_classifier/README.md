@@ -31,14 +31,17 @@ Download audio files:
 python download_audios.py --in_file="<in_file>.xlsx" --out_folder_mp3="<folder name>"
 ```
 - Time taken to download 100 audios : 27.30 seconds
+- Time taken to download 6000 audios : 1541.53 seconds
 
 > Hardware specification: Processor: Intel(R) Core(TM) i5-7200U CPU @ 2.50GHz, 16GB RAM
 
 Convert mp3 files to wav files:
 ```python
 python convert_to_wav.py --in_folder="<folder created in previous step>" --out_folder="<folder containing wav audios>"
+```
 
 - Time taken to Convert the audios to Wave : 9.36 seconds
+- Time taken to Convert 6000 (actually 5964) audios to Wave : 833.69 seconds
 
 ### Audio features extraction
 
@@ -61,4 +64,9 @@ python get_features.py --in_file="<cleaned data file>.xlsx" --auds_dir="<wav fil
 
 ### Train the gender classifier
 
+We are using an SVM classifier to label an audio into the 'Male' vs. 'Female' class.
+```python
 python train_gender_classifier.py --feats_file=gender_classifier_features.csv --model_name=gender_classifier_26_04_2021.pkl
+```
+
+
