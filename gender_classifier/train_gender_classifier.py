@@ -38,7 +38,7 @@ def plotConfusionMatrix(confusionMatrix, classes, fname):
     plt.show()
     plt.close()
 	
-def train_model_SVM(train_Data, test_Data, model_name):
+def train_model_SVM(train_Data, test_Data, model_name, scaler_name):
     x_train = train_Data[:,0:136]
     y_train = train_Data[:,136]
     x_test = test_Data[:,0:136]
@@ -47,7 +47,8 @@ def train_model_SVM(train_Data, test_Data, model_name):
     scaler.fit(x_train)
     x_train = scaler.transform(x_train)
     x_test = scaler.transform(x_test)
-    pickle.dump(scaler, open('gender_scaler','wb'))
+    #pickle.dump(scaler, open('gender_scaler','wb'))
+    pickle.dump(scaler, open(scaler_name, 'wb'))
     # svm = SVC(C=2, gamma = 0.03).fit(x_train, y_train)
     svm = SVC(C=1, gamma=0.01).fit(x_train, y_train)
     train_pred = svm.predict(x_train)
@@ -65,7 +66,7 @@ def train_model_SVM(train_Data, test_Data, model_name):
     return y_test, y_pred, accuracy
 
 
-def k_fold_validation_train_model(input_file, model_name, k=10):
+def k_fold_validation_train_model(input_file, model_name, scaler_name, k=10):
     rows = []
     
     with open(input_file, 'r') as csvfile:
@@ -90,7 +91,7 @@ def k_fold_validation_train_model(input_file, model_name, k=10):
         test_data = rows[test_index]
         #model_name = "genderClassifier" + str(i);
         start_time = time.time()
-        y_true, y_pred, accuracy = train_model_SVM(train_data, test_data, model_name)
+        y_true, y_pred, accuracy = train_model_SVM(train_data, test_data, model_name, scaler_name)
         end_time = time.time()
         print("Time taken to train SVM gender classifier : {} seconds".format(end_time-start_time))
         accuracies.append(accuracy)
@@ -110,15 +111,16 @@ def k_fold_validation_train_model(input_file, model_name, k=10):
     
     return
 
-def main(feats_file, model_name):
-    k_fold_validation_train_model(feats_file, model_name)
+def main(feats_file, model_name, scaler_name):
+    k_fold_validation_train_model(feats_file, model_name, scaler_name)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--feats_file', type=str, help='File path for extracted features', required=True)
     parser.add_argument('--model_name', type=str, help='Name for the gender classifier model', required=True)
+    parser.add_argument('--scaler_name', type=str, help='Name of the standard scaler used for feature normalization', required=True)
     args = parser.parse_args()
-    main(args.feats_file, args.model_name)
+    main(args.feats_file, args.model_name, args.scaler_name)
 
 #k_fold_validation_train_model("gender_classifier_features_data.csv")
 
