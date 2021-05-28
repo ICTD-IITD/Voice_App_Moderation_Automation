@@ -17,6 +17,8 @@ sudo python get_gender_classifier_data.py --thresh=500 --email_ids=aman.khullar@
 
 - The data generated from the above command is stored in the 'data' folder by the name `gender_classifier.xlsx`
 
+- With respect to number of data points that should be used to train the classifier, there is no fixed rule but with around 4,700 items, we got a test set accuracy of 91.6% so probably using around 10,000 in the training set is a good idea.
+
 
 ### Download the audios and convert them into wav files
 
@@ -59,14 +61,44 @@ Extract and store audio features - in both npy files and csv format:
 python get_features.py --in_file="<cleaned data file>.xlsx" --auds_dir="<wav files>" --out_file="<features csv>.csv" --feats_dir="<dir containing npy files for features>"
 ```
 
-- Time taken to extract features of 50 audio files : 371.02 seconds
+- Time taken to extract features of 50 audio files : 371.02 seconds and for 100 audio files : 741.04 seconds
+- Time taken to extract features from 6000 audio files: approx 6 hours
+
+### Make the train-test data split
+```python
+python create_train_test_splits.py --feats_csv="gender_classifier_features_17_05_2021.csv" --train_csv="gender_classifier_features_train_17_05_2021.csv" --test_csv="gender_classifier_features_test_17_05_2021.csv"
+```
+This script randomizes the data and keeps 80% of data in the training set and 20% of data in the test set
 
 
 ### Train the gender classifier
-
 We are using an SVM classifier to label an audio into the 'Male' vs. 'Female' class.
 ```python
-python train_gender_classifier.py --feats_file=gender_classifier_features.csv --model_name=gender_classifier_26_04_2021.pkl
+python train_gender_classifier.py --feats_file=gender_classifier_features_train_17_05_2021.csv --model_name=gender_classifier_temp1.pkl --scaler_name=gender_classifier_scaler_temp1.pkl
 ```
+
+### Test the gender classifier
+Get the Confusion Matrix and accuracy of the new model. You should compare this with the previous model on the same dataset and then decide if the new model should be used.
+```python
+python test_gender_classifier.py --feats_file=gender_classifier_features_test_17_05_2021.csv --model_name=gender_classifier_temp1.pkl --scaler_name=gender_classifier_scaler_temp1.pkl
+```
+
+
+<!-- ('Accuracy on training set: ', 0.9603130240357741)
+('Accuracy on test set: ', 0.931323283082077)
+Time taken to train SVM gender classifier : 5.48421382904 seconds
+
+Average Accuracy : 0.931
+('F1_score', array([0.92531876, 0.93643411]))
+
+
+27th May
+
+('Accuracy on training set: ', 0.9575181665735047)
+('Accuracy on test set: ', 0.9514237855946399)
+Time taken to train SVM gender classifier : 5.38154792786 seconds
+('Accuracies : ', array([0.95142379]))
+Average Accuracy : 0.951
+('F1_score', array([0.94974003, 0.95299838])) -->
 
 
