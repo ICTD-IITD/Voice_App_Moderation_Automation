@@ -1,8 +1,8 @@
-# Gender Classifier
+# Blank Classifier
 
 ## Data acquisition
 
-The script to get data for the gender classifier is through `get_blank_classifier_data.py`
+The script to get data for the blank classifier is through `get_blank_classifier_data.py`
 
 - This script runs in a python 2 environment present in the Master Server
 
@@ -53,7 +53,7 @@ The 136 features are extracted for all the audio files using this script. Corres
 - Hence, for example if we have an audio of 100ms, there will be 3 frames and for a 1min audio there will be 2399 frames
 - There will be 34 features for each frame
 - Hence the feature matrix size will be 34*2399 for a 1 minute audio
-- After that we take the min, max, mean, stddev for each feature across all the frames
+- After that we take the 25th percentile, 50th percentile, 75th percentile and  95th percentile for each feature across all the frames
 - We finally get a 34*4=136 feature vector for any audio file
 
 Extract and store audio features - in both npy files and csv format:
@@ -81,7 +81,7 @@ python train_blank_classifier.py --feats_file=data/blank_classifier_feats_train.
 ### Test the blank classifier
 Get the Confusion Matrix and accuracy of the new model. You should compare this with the previous model on the same dataset and then decide if the new model should be used.
 ```python
-python test_gender_classifier.py --feats_file=gender_classifier_features_test_17_05_2021.csv --model_name=gender_classifier_temp1.pkl --scaler_name=gender_classifier_scaler_temp1.pkl
+python test_blank_classifier.py --feats_file=data/blank_classifier_feats_test.csv --model_name=models/blank_classifier_31_05_2021.pkl --scaler_name=models/blank_classifier_scaler.pkl
 ```
 
 
