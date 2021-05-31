@@ -44,9 +44,9 @@ if args.start_date and args.end_date is not None:
         print("Lesser than threshold number of items in Non-blank class, please increase the dates because there are {} items".format(news_accept.count()))
         sys.exit() 
 
-def item_detail (news, email_ids, output_file):
+def item_detail (news, email_ids, output_file, blank_flag):
 
-    data = [['Instance name', 'Unique Item ID', 'Title', 'CallerId','State', 'Block', 'District', 'Item created date', 'transcription', 'state','tags','Recording audio link', 'Total listening duration', 'Item duration', 'published date', 'Format', 'Gender', 'Checksum']]#, 'ML transcript']]#, 'Occupation', 'Is Comment']]#, 'ML transcript','ML State', 'ML Gender', 'ML tags',]]
+    data = [['Instance name', 'Unique Item ID', 'Title', 'CallerId','State', 'Block', 'District', 'Item created date', 'transcription', 'state','tags','Recording audio link', 'Total listening duration', 'Item duration', 'published date', 'Format', 'Gender', 'Checksum', 'Accept Blank label']]#, 'ML transcript']]#, 'Occupation', 'Is Comment']]#, 'ML transcript','ML State', 'ML Gender', 'ML tags',]]
     for idx, item in enumerate(news):
       if idx >= int(args.thresh):
           break
@@ -103,6 +103,11 @@ def item_detail (news, email_ids, output_file):
       else:
           d.append('NA')
 
+      if blank_flag:
+          d.append('0')
+      else:
+          d.append('1')
+
       #if item.age_group:
       #    d.append(item.age_group)
       #else:
@@ -147,9 +152,9 @@ def item_detail (news, email_ids, output_file):
 
 
 try:
-    data_blank = item_detail(news_blank, email_ids, output_file)
+    data_blank = item_detail(news_blank, email_ids, output_file, blank_flag=True)
     data_blank = data_blank[1:]    # Removing the header repetition
-    data_accept = item_detail(news_accept, email_ids, output_file)
+    data_accept = item_detail(news_accept, email_ids, output_file, blank_flag=False)
 
     data_accept.extend(data_blank)
      
