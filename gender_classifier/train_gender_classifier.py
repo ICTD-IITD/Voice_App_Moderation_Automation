@@ -98,7 +98,7 @@ def k_fold_validation_train_model(input_file, model_name, scaler_name, k=10):
         test_true = np.append(test_true,y_true)
         test_predicted = np.append(test_predicted, y_pred)		
         i = i+1
-        break
+        break    # do not break if you want to evaluate over all the K-Folds
 
     accuracies = np.array(accuracies)
     print("Accuracies : " , accuracies)
@@ -109,7 +109,7 @@ def k_fold_validation_train_model(input_file, model_name, scaler_name, k=10):
     results = confusion_matrix(test_true, test_predicted, labels = classes)
     plotConfusionMatrix(results, classes, "genderClassifier")	
     
-    return
+    print("Training and validation finished")
 
 def main(feats_file, model_name, scaler_name):
     k_fold_validation_train_model(feats_file, model_name, scaler_name)
