@@ -1,4 +1,6 @@
-# Accept Reject Classifier
+# Automatic Content Moderation
+
+This repo contains the code for the paper, [Experiences with the Introduction of AI-based Tools for Moderation Automation of Voice-based Participatory Media Forums](https://arxiv.org/abs/2108.04208)
 
 # GV’s guide to the Blank classifier
 
